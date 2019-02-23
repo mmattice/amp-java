@@ -3,22 +3,17 @@ package com.twistedmatrix.amp;
 import java.util.List;
 import java.util.ArrayList;
 import java.util.Arrays;
-import java.util.HashMap;
-import java.util.Collection;
-
-import java.nio.ByteBuffer;
 
 import junit.framework.Test;
 import junit.framework.TestCase;
 import junit.framework.TestSuite;
 
-import java.io.UnsupportedEncodingException;
 
-import com.twistedmatrix.amp.LocalCommand;
 import com.twistedmatrix.internet.ITransport;
 import com.twistedmatrix.internet.Deferred;
 
 public class TestAMP extends TestCase {
+
     public static class Int16ReceiverTest extends TestCase {
         byte[] parsedString = null;
 
@@ -109,7 +104,7 @@ public class TestAMP extends TestCase {
             assertEquals(alhm.size(), 1);
         }
 
-        private class SomeAttributes {
+        public class SomeAttributes {
             public int a;
             public String b;
             public boolean c;
@@ -189,7 +184,7 @@ public class TestAMP extends TestCase {
             AMPBox ab = new AMPBox();
             ab.put("_command", "ninjas");
             ab.put("_ask", "ninjas");
-	    a.localCommand("ninjas",new LocalCommand("thingy",new String[] {}));
+	        a.localCommand("ninjas",new LocalCommand("thingy",new String[] {}));
             a.ampBoxReceived(ab);
             assertEquals(1, rancommandcount);
         }
@@ -223,8 +218,8 @@ public class TestAMP extends TestCase {
 
             FakeTransport ft = new FakeTransport();
             DeferredReturner dr = new DeferredReturner();
-	    dr.localCommand("ninjas",
-			    new LocalCommand("thingy",new String[] {}));
+	        dr.localCommand("ninjas",
+			                new LocalCommand("thingy",new String[] {}));
             dr.makeConnection(ft);
 
             AMPBox ab = new AMPBox();
@@ -332,4 +327,5 @@ public class TestAMP extends TestCase {
         suite.addTest(new TestSuite(AmpParserTest.class));
         return suite;
     }
+
 }

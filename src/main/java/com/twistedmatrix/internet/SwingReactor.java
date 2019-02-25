@@ -2,6 +2,7 @@ package com.twistedmatrix.internet;
 
 import java.io.IOException;
 import javax.swing.SwingUtilities;
+
 import com.twistedmatrix.internet.Reactor;
 
 /**
@@ -27,16 +28,16 @@ public class SwingReactor extends Reactor {
      * Inject the application code into the Swing thread.
      */
     public void doIteration() throws Throwable {
-        Runnable r = new Runnable () {
-                public void run() {
-                    try {
-                        SwingReactor.this.doIteration();
-                    } catch (Throwable t) {
-                        // XXX TODO: Do something with this exception.
-                        // Re-throw it or something?
-                    }
+        Runnable r = new Runnable() {
+            public void run() {
+                try {
+                    SwingReactor.this.doIteration();
+                } catch (Throwable t) {
+                    // XXX TODO: Do something with this exception.
+                    // Re-throw it or something?
                 }
-            };
+            }
+        };
         SwingUtilities.invokeAndWait(r);
     }
 }

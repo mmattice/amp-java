@@ -2,7 +2,9 @@ package com.twistedmatrix.amp;
 
 import com.twistedmatrix.internet.Protocol;
 
-/** This class buffers incoming data and does some initial processing. */
+/**
+ * This class buffers incoming data and does some initial processing.
+ */
 public abstract class Int16StringReceiver extends Protocol {
 
     byte[] recvd;
@@ -10,6 +12,7 @@ public abstract class Int16StringReceiver extends Protocol {
     static void cpy(byte[] a, byte[] b, int offt) {
         System.arraycopy(a, 0, b, offt, a.length);
     }
+
     static void cpy(byte[] a, byte[] b) {
         cpy(a, b, 0);
     }
@@ -18,10 +21,14 @@ public abstract class Int16StringReceiver extends Protocol {
         recvd = new byte[0];
     }
 
-    /** Deliver the data. */
+    /**
+     * Deliver the data.
+     */
     public abstract void stringReceived(byte[] hunk);
 
-    /** Handle incoming data. */
+    /**
+     * Handle incoming data.
+     */
     public void dataReceived(byte[] data) {
         byte[] old = recvd;
         recvd = new byte[old.length + data.length];
@@ -34,7 +41,9 @@ public abstract class Int16StringReceiver extends Protocol {
         }
     }
 
-    /** Convert a byte to an unsigned integer. */
+    /**
+     * Convert a byte to an unsigned integer.
+     */
     public static int toInt(byte b) {
         // why doesn't java have unsigned bytes again?
         int i;
@@ -57,7 +66,7 @@ public abstract class Int16StringReceiver extends Protocol {
         /* unpack the 16-bit length */
         int reqlen = (toInt(recvd[0]) * 256) + toInt(recvd[1]);
 
-        if (recvd.length < (2+reqlen)) {
+        if (recvd.length < (2 + reqlen)) {
             return false;
         }
 

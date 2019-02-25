@@ -1,10 +1,10 @@
 package com.twistedmatrix.internet;
 
-import junit.framework.TestCase;
-import junit.framework.TestSuite;
 import org.junit.Test;
 
-public class TestInternet extends TestCase {
+import static org.junit.Assert.assertEquals;
+
+public class TestInternet {
     int callcount = 0;
 
     @Test

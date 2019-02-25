@@ -6,10 +6,10 @@ import java.util.Arrays;
 
 import com.twistedmatrix.internet.ITransport;
 import com.twistedmatrix.internet.Deferred;
+
 import org.junit.Test;
 
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertFalse;
+import static org.junit.Assert.*;
 
 public class TestAMP {
     AMPBox received;
@@ -42,7 +42,7 @@ public class TestAMP {
     }
 
     @Test
-    public void testByteIntegerConversion() throws Throwable {
+    public void testByteIntegerConversion() {
         for (int i = 0; i < 256; i++) {
             assertEquals(Int16StringReceiver.toInt((byte) i),
                     i);
@@ -92,6 +92,7 @@ public class TestAMP {
         public byte[] d;
         // float?
 
+        @Override
         public boolean equals(Object o) {
             if (o instanceof SomeAttributes) {
                 SomeAttributes other = (SomeAttributes) o;
@@ -105,7 +106,7 @@ public class TestAMP {
     }
 
     @Test
-    public void testFillingOutStruct() throws Throwable {
+    public void testFillingOutStruct() {
         AMPBox ab = new AMPBox();
         SomeAttributes sa = new SomeAttributes();
 
@@ -122,7 +123,7 @@ public class TestAMP {
     }
 
     @Test
-    public void testFillingOutRoundTrip() throws Throwable {
+    public void testFillingOutRoundTrip() {
         AMPBox ab = new AMPBox();
         SomeAttributes sa = new SomeAttributes();
         SomeAttributes sb = new SomeAttributes();
@@ -130,7 +131,7 @@ public class TestAMP {
         sa.b = "more stufp";
         sa.c = true;
         sa.d = new byte[]{1, 2, 3, 4, 5, 6, 7, 8};
-        assertFalse(sa.equals(sb));
+        assertNotEquals(sa, sb);
 
         ab.extractFrom(sa);
         ab.fillOut(sb);
@@ -138,9 +139,9 @@ public class TestAMP {
     }
 
     @Test
-    public void testEncodeDecodeRoundTrip() throws Throwable {
+    public void testEncodeDecodeRoundTrip() {
         AMPBox ab = new AMPBox();
-        AMPBox ab2 = null;
+        AMPBox ab2;
         String veryLong = (
                 "xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx" +
                         "xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx" +
@@ -157,10 +158,10 @@ public class TestAMP {
         assertEquals(ab, ab2);
     }
 
-    int rancommandcount = 0;
+    private int rancommandcount = 0;
 
     @Test
-    public void testCommandDispatch() throws Throwable {
+    public void testCommandDispatch() {
         AMP a = new AMP() {
             public void thingy() {
                 rancommandcount++;
@@ -198,7 +199,7 @@ public class TestAMP {
      * only when the Deferred fires.
      */
     @Test
-    public void testCommandDeferredReturn() throws Throwable {
+    public void testCommandDeferredReturn() {
 
         class DeferredReturner extends AMP {
             public Deferred d;
@@ -233,7 +234,7 @@ public class TestAMP {
      * do not get Deferred.
      */
     @Test
-    public void testSynchronousValue() throws Throwable {
+    public void testSynchronousValue() {
 
         class SynchronousValue {
             // Make some default values
@@ -273,7 +274,7 @@ public class TestAMP {
         assertEquals("1", new String(lab.get(0).get("intValue")));
     }
 
-    ArrayList<Integer> ali;
+    private ArrayList<Integer> ali;
 
     public class WhatTheHell extends AMP {
         public class Command extends LocalCommand {
@@ -301,7 +302,7 @@ public class TestAMP {
     }
 
     @Test
-    public void testCommandArgumentParsing() throws Throwable {
+    public void testCommandArgumentParsing() {
         this.ali = new ArrayList<Integer>();
         AMP a = new WhatTheHell();
 

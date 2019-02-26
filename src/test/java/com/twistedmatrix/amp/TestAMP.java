@@ -85,6 +85,65 @@ public class TestAMP {
         assertEquals(alhm.size(), 1);
     }
 
+    @Test
+    public void testParseDoubleInAmpList() throws Throwable {
+        String toParse = (
+                "\u0000\u0007numeric" +
+                "\u0000\u0008123456.0" +
+
+                "\u0000\u0003NaN" +
+                "\u0000\u0003nan" +
+
+                "\u0000\u0006posinf" +
+                "\u0000\u0003Inf" +
+
+                "\u0000\u0006neginf" +
+                "\u0000\u0004-Inf" +
+
+                "\u0000\u0000");
+        byte[] dataToParse = toParse.getBytes("ISO-8859-1");
+
+        List<AMPBox> alhm = AMPParser.parseData(dataToParse);
+        assertEquals(123456.0, alhm.get(0).getAndDecode("numeric", Double.class));
+        assertEquals(Double.NaN, alhm.get(0).getAndDecode("NaN", Double.class));
+        assertEquals(Double.POSITIVE_INFINITY, alhm.get(0).getAndDecode("posinf", Double.class));
+        assertEquals(Double.NEGATIVE_INFINITY, alhm.get(0).getAndDecode("neginf", Double.class));
+    }
+
+    public class ListAttribute {
+        public List<Double> a;
+
+        @Override
+        public boolean equals(Object o) {
+            if (o instanceof ListAttribute) {
+                ListAttribute other = (ListAttribute) o;
+                return ((other.a == this.a));
+            }
+            return false;
+        }
+    }
+
+    @Test
+    public void testParseDoubleInListOf() throws Throwable {
+        AMPBox ab = new AMPBox();
+        ListAttribute la = new ListAttribute();
+
+        String toParse = (
+                "\u0000\u0008123456.0" +
+                "\u0000\u0003nan" +
+                "\u0000\u0003Inf" +
+                "\u0000\u0004-Inf"
+                );
+        ab.put("a", toParse);
+        ab.fillOut(la);
+
+        assertEquals(123456.0, (double) la.a.get(0), 0.001);
+        assertEquals(Double.NaN, (double) la.a.get(1), 0);
+        assertEquals(Double.POSITIVE_INFINITY, (double) la.a.get(2), 0);
+        assertEquals(Double.NEGATIVE_INFINITY, (double) la.a.get(3), 0);
+
+    }
+
     public class SomeAttributes {
         public int a;
         public String b;

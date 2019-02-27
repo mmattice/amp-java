@@ -592,7 +592,7 @@ public class Reactor {
         while (0 != _pendingCalls.size()) {
             try {
                 long then = _pendingCalls.firstKey();
-                if (then < now) {
+                if (then <= now) {
                     Runnable r = _pendingCalls.remove(then);
                     r.run();
                 } else {

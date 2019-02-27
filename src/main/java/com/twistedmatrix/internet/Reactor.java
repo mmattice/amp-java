@@ -593,7 +593,7 @@ public class Reactor {
             try {
                 long then = _pendingCalls.firstKey();
                 if (then < now) {
-                    Runnable r = _pendingCalls.remove((Object) new Long(then));
+                    Runnable r = _pendingCalls.remove(then);
                     r.run();
                 } else {
                     return then - now;
@@ -728,14 +728,18 @@ public class Reactor {
             int selected;
             long timeout = processTimedEvents();
 
-            if (timeout >= 0) {
-                _selector.select(timeout);
-            } else {
-                _selector.select();
+            if (_running) {
+                if (timeout >= 0) {
+                    _selector.select(timeout);
+                } else {
+                    _selector.select();
+                }
+                this.doIteration();
             }
-            this.doIteration();
         }
-        _connection.connectionLost(new Throwable("Shutdown"));
+        if (_connection != null) {
+            _connection.connectionLost(new Throwable("Shutdown"));
+        }
     }
 
     /**

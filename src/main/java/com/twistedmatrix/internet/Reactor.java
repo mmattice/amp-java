@@ -12,9 +12,9 @@ import java.nio.channels.SocketChannel;
 import java.nio.channels.SelectionKey;
 import java.util.List;
 import java.util.ArrayList;
-import java.util.TreeMap;
 import java.util.Iterator;
 import java.util.NoSuchElementException;
+import java.util.concurrent.ConcurrentSkipListMap;
 import java.util.concurrent.Executor;
 import java.util.concurrent.Executors;
 import javax.net.ssl.SSLContext;
@@ -37,12 +37,12 @@ public class Reactor {
     private TCPConnection _connection;
     private Selector _selector;
     private boolean _running;
-    private TreeMap<Long, Runnable> _pendingCalls;
+    private ConcurrentSkipListMap<Long, Runnable> _pendingCalls;
 
     public Reactor() throws IOException {
         _selector = Selector.open();
         _running = false;
-        _pendingCalls = new TreeMap<Long, Runnable>();
+        _pendingCalls = new ConcurrentSkipListMap<>();
     }
 
     /* It appears that this interface is actually unnamed in
@@ -642,11 +642,9 @@ public class Reactor {
      */
     public void callLater(double secondsLater, Runnable runme) {
         long millisLater = (long) (secondsLater * 1000.0);
-        synchronized (_pendingCalls) {
-            _pendingCalls.put(System.currentTimeMillis() + millisLater, runme);
-            // This isn't actually an interestOps
-            interestOpsChanged();
-        }
+        _pendingCalls.put(System.currentTimeMillis() + millisLater, runme);
+        // This isn't actually an interestOps
+        interestOpsChanged();
     }
 
     /**
@@ -725,7 +723,6 @@ public class Reactor {
     public void run() throws Throwable {
         _running = true;
         while (_running) {
-            int selected;
             long timeout = processTimedEvents();
 
             if (_running) {

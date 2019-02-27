@@ -41,9 +41,9 @@ public abstract class AMPParser extends Int16StringReceiver {
     public static List<AMPBox> parseData(byte[] data) {
         ParseGatherer pg = new ParseGatherer();
         pg.dataReceived(data);
-        if (pg.recvd.length != 0) {
+        if (pg.buffs.getRemainderLength() != 0) {
             System.out.println("UNPARSED: " + pg.getCurrent());
-            for (byte b : pg.recvd) {
+            for (byte b : pg.buffs.getRemainder()) {
                 System.out.print(Int16StringReceiver.toInt(b));
                 System.out.print(", ");
             }

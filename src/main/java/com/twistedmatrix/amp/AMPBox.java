@@ -492,31 +492,32 @@ public class AMPBox implements Map<byte[], byte[]> {
                     if (tdlen > 0) {
                         Map<String, Object> values = new HashMap<String, Object>();
                         for (String param : params.keySet()) {
-                            byte[] hunk = new byte[tdlen];
+                            byte[] oldbuf;
+                            int newlen;
+                            byte[] hunk;
+
+                            hunk = new byte[tdlen];
                             System.arraycopy(toDecode, 2, hunk, 0, tdlen);
-                            byte[] oldbuf = toDecode;
-                            int newlen = oldbuf.length - tdlen - 2;
+                            oldbuf = toDecode;
+                            newlen = oldbuf.length - tdlen - 2;
                             toDecode = new byte[newlen];
                             System.arraycopy(oldbuf, tdlen + 2, toDecode, 0, newlen);
+
+
                             String key = (String) decodeObject(hunk, String.class,
                                     lvals);
 
                             tdlen = getItemLength(toDecode);
-                            hunk = new byte[tdlen];
-                            if (tdlen > 0) {
-                                System.arraycopy(toDecode, 2, hunk, 0, tdlen);
-                                oldbuf = toDecode;
-                                newlen = oldbuf.length - tdlen - 2;
-                                toDecode = new byte[newlen];
-                                System.arraycopy(oldbuf, tdlen + 2,
-                                        toDecode, 0, newlen);
 
-                            } else {
-                                oldbuf = toDecode;
-                                newlen = oldbuf.length - 2;
-                                toDecode = new byte[newlen];
-                                System.arraycopy(oldbuf, 2, toDecode, 0, newlen);
-                            }
+                            hunk = new byte[tdlen];
+                            System.arraycopy(toDecode, 2, hunk, 0, tdlen);
+                            oldbuf = toDecode;
+                            newlen = oldbuf.length - tdlen - 2;
+                            toDecode = new byte[newlen];
+                            System.arraycopy(oldbuf, tdlen + 2,
+                                    toDecode, 0, newlen);
+
+
                             tdlen = getItemLength(toDecode);
 
                             Field f = params.get(key);
@@ -536,8 +537,11 @@ public class AMPBox implements Map<byte[], byte[]> {
                             e.printStackTrace();
                         }
                     } else {
-                        byte[] oldbuf = toDecode;
-                        int newlen = oldbuf.length - 2;
+                        byte[] oldbuf;
+                        int newlen;
+
+                        oldbuf = toDecode;
+                        newlen = oldbuf.length - tdlen - 2;
                         toDecode = new byte[newlen];
                         System.arraycopy(oldbuf, 2, toDecode, 0, newlen);
                     }
